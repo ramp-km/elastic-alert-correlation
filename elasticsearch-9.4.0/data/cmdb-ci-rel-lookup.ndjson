@@ -1,0 +1,31 @@
+{"sys_id": "fb0c21addb2c13406b6a7b088c9619b0", "parent": {"value": "Microsoft IIS Server@tnatwinxl01"}, "child": {"value": "tnatwinxl01"}, "relationship": {"type": "60bc4e22c0a8010e01f074cbe6bd73c3"}}
+{"sys_id": "c2ebad6ddb2c13406b6a7b088c9619fa", "parent": {"value": "Microsoft IIS Server@pmtwinxl01"}, "child": {"value": "pmtwinxl01"}, "relationship": {"type": "60bc4e22c0a8010e01f074cbe6bd73c3"}}
+{"sys_id": "50757275db2c5340f5759e04db961989", "parent": {"value": "pmtwinxl01"}, "child": {"value": "hvhost01"}, "relationship": {"type": "d93304fb0a0a0b78006081a72ef08444"}}
+{"sys_id": "10757275db2c5340f5759e04db961938", "parent": {"value": "tnatwinxl01"}, "child": {"value": "hvhost01"}, "relationship": {"type": "d93304fb0a0a0b78006081a72ef08444"}}
+{"sys_id": "d0c8cab3dbe097406b6a7b088c961974", "parent": {"value": "Apache server@multimaster06"}, "child": {"value": "multimaster06"}, "relationship": {"type": "60bc4e22c0a8010e01f074cbe6bd73c3"}}
+{"sys_id": "10c8cab3dbe097406b6a7b088c961976", "parent": {"value": "Apache server@multimaster06"}, "child": {"value": "multimaster06"}, "relationship": {"type": "60bc4e22c0a8010e01f074cbe6bd73c3"}}
+{"sys_id": "ff0c21addb2c13406b6a7b088c9619b0", "parent": {"value": "Microsoft IIS Server@tnatwinxl01"}, "child": {"value": "bf0c21addb2c13406b6a7b088c9619af"}, "relationship": {"type": "55c95bf6c0a8010e0118ec7056ebc54d"}}
+{"sys_id": "fb0c21addb2c13406b6a7b088c9619b1", "parent": {"value": "7b0c21addb2c13406b6a7b088c9619af"}, "child": {"value": "Microsoft IIS Server@tnatwinxl01"}, "relationship": {"type": "5f985e0ec0a8010e00a9714f2a172815"}}
+{"sys_id": "f70c21addb2c13406b6a7b088c9619b1", "parent": {"value": "Microsoft IIS Server@tnatwinxl01"}, "child": {"value": "Default Web Site/"}, "relationship": {"type": "55c95bf6c0a8010e0118ec7056ebc54d"}}
+{"sys_id": "f30c21addb2c13406b6a7b088c9619b1", "parent": {"value": "Microsoft IIS Server@tnatwinxl01"}, "child": {"value": "370c21addb2c13406b6a7b088c9619b0"}, "relationship": {"type": "55c95bf6c0a8010e0118ec7056ebc54d"}}
+{"sys_id": "ceebad6ddb2c13406b6a7b088c9619fa", "parent": {"value": "Microsoft IIS Server@pmtwinxl01"}, "child": {"value": "0eebad6ddb2c13406b6a7b088c9619f9"}, "relationship": {"type": "55c95bf6c0a8010e0118ec7056ebc54d"}}
+{"sys_id": "caebad6ddb2c13406b6a7b088c9619fb", "parent": {"value": "82ebad6ddb2c13406b6a7b088c9619ea"}, "child": {"value": "Microsoft IIS Server@pmtwinxl01"}, "relationship": {"type": "5f985e0ec0a8010e00a9714f2a172815"}}
+{"sys_id": "caebad6ddb2c13406b6a7b088c9619fa", "parent": {"value": "Microsoft IIS Server@pmtwinxl01"}, "child": {"value": "86ebad6ddb2c13406b6a7b088c9619f9"}, "relationship": {"type": "55c95bf6c0a8010e0118ec7056ebc54d"}}
+{"sys_id": "c6ebad6ddb2c13406b6a7b088c9619fb", "parent": {"value": "Microsoft IIS Server@pmtwinxl01"}, "child": {"value": "ftpsite/"}, "relationship": {"type": "55c95bf6c0a8010e0118ec7056ebc54d"}}
+{"sys_id": "c6ebad6ddb2c13406b6a7b088c9619fa", "parent": {"value": "Microsoft IIS Server@pmtwinxl01"}, "child": {"value": "0aebad6ddb2c13406b6a7b088c9619eb"}, "relationship": {"type": "55c95bf6c0a8010e0118ec7056ebc54d"}}
+{"sys_id": "c2ebad6ddb2c13406b6a7b088c9619fb", "parent": {"value": "Microsoft IIS Server@pmtwinxl01"}, "child": {"value": "Default Web Site/"}, "relationship": {"type": "55c95bf6c0a8010e0118ec7056ebc54d"}}
+{"sys_id": "50757275db2c5340f5759e04db961988", "parent": {"value": "pmtwinxl01"}, "child": {"value": "54757275db2c5340f5759e04db961986"}, "relationship": {"type": "1bb40e370a0a0b323d85a1ce84f8feae"}}
+{"sys_id": "18757275db2c5340f5759e04db9619bf", "parent": {"value": "dc757275db2c5340f5759e04db9619be"}, "child": {"value": "hvhost01"}, "relationship": {"type": "aa9434870ab301544ce2943bf03fd7a8"}}
+{"sys_id": "18757275db2c5340f5759e04db96198f", "parent": {"value": "srdkwinxl01"}, "child": {"value": "hvhost01"}, "relationship": {"type": "d93304fb0a0a0b78006081a72ef08444"}}
+{"sys_id": "14757275db2c5340f5759e04db9619bb", "parent": {"value": "itspwinll02"}, "child": {"value": "hvhost01"}, "relationship": {"type": "d93304fb0a0a0b78006081a72ef08444"}}
+{"sys_id": "10757275db2c5340f5759e04db961937", "parent": {"value": "tnatwinxl01"}, "child": {"value": "94757275db2c5340f5759e04db961935"}, "relationship": {"type": "1bb40e370a0a0b323d85a1ce84f8feae"}}
+{"sys_id": "d8757275db2c5340f5759e04db961931", "parent": {"value": "90757275db2c5340f5759e04db961931"}, "child": {"value": "hvhost01"}, "relationship": {"type": "aa9434870ab301544ce2943bf03fd7a8"}}
+{"sys_id": "d4757275db2c5340f5759e04db961933", "parent": {"value": "9c757275db2c5340f5759e04db961932"}, "child": {"value": "hvhost01"}, "relationship": {"type": "aa9434870ab301544ce2943bf03fd7a8"}}
+{"sys_id": "1c757275db2c5340f5759e04db96192d", "parent": {"value": "d4757275db2c5340f5759e04db96192c"}, "child": {"value": "hvhost01"}, "relationship": {"type": "aa9434870ab301544ce2943bf03fd7a8"}}
+{"sys_id": "e755b23ddbe853406b6a7b088c961928", "parent": {"value": "a355b23ddbe853406b6a7b088c961927"}, "child": {"value": "hvhost01"}, "relationship": {"type": "de5aeb6a0ab3015854626f204fb7b1c0"}}
+{"sys_id": "98c8cab3dbe097406b6a7b088c9619a0", "parent": {"value": "Apache server@multimaster06"}, "child": {"value": "Apache server@multimaster06"}, "relationship": {"type": "1a9cb166f1571100a92eb60da2bce5c5"}}
+{"sys_id": "18757275db2c5340f5759e04db96198e", "parent": {"value": "srdkwinxl01"}, "child": {"value": "1c757275db2c5340f5759e04db96198c"}, "relationship": {"type": "1bb40e370a0a0b323d85a1ce84f8feae"}}
+{"sys_id": "14757275db2c5340f5759e04db9619ba", "parent": {"value": "itspwinll02"}, "child": {"value": "18757275db2c5340f5759e04db9619b8"}, "relationship": {"type": "1bb40e370a0a0b323d85a1ce84f8feae"}}
+{"sys_id": "18757275db2c5340f5759e04db961934", "parent": {"value": "itspwinxl02"}, "child": {"value": "9c757275db2c5340f5759e04db961932"}, "relationship": {"type": "1bb40e370a0a0b323d85a1ce84f8feae"}}
+{"sys_id": "14757275db2c5340f5759e04db96192f", "parent": {"value": "itspwinxl02"}, "child": {"value": "d4757275db2c5340f5759e04db96192c"}, "relationship": {"type": "1bb40e370a0a0b323d85a1ce84f8feae"}}
+{"sys_id": "642c61addb2c13406b6a7b088c9619ba", "parent": {"value": "Default Web Site/"}, "child": {"value": "2c2c61addb2c13406b6a7b088c9619b6"}, "relationship": {"type": "55c95bf6c0a8010e0118ec7056ebc54d"}}

@@ -1,0 +1,218 @@
+name: build-or-refresh-servicenow-cmdb-ci-rel-lookup
+description: >-
+  Rebuilds the lookup index servicenow-cmdb-ci-rel-lookup with CI relationship rows
+  (parent CI name, relationship type, child CI name) resolved from sys_ids in
+  servicenow-cmdb-cis, using an enrich policy and an ingest pipeline.
+consts:
+  source_index: servicenow-cmdb-cis
+  lookup_index: servicenow-cmdb-ci-rel-lookup
+  enrich_policy: servicenow-ci-name-policy
+  pipeline: servicenow-ci-relationship-names
+  # Map of cmdb_rel_type sys_id -> human-readable relationship type name.
+  # cmdb_rel_type records are NOT present in the source index, so add entries
+  # manually, e.g.:
+  #   1a9cb166f1571100a92eb60da2bce5c5: "Depends on::Used by"
+  # Type ids without an entry are written as the raw sys_id.
+  relationship_type_names: {}
+triggers:
+  - type: manual
+  - type: scheduled
+    with:
+      rrule:
+        freq: DAILY
+        interval: 1
+        byhour: [2]
+        byminute: [0]
+        tzid: UTC
+steps:
+  # 1. Ensure the enrich policy (sys_id -> name) exists
+  - name: get_enrich_policy
+    type: elasticsearch.request
+    with:
+      method: GET
+      path: /_enrich/policy/{{ consts.enrich_policy }}
+    on-failure:
+      continue: true
+
+  - name: enrich_policy_state
+    type: data.set
+    with:
+      policy_count: "{{ steps.get_enrich_policy.output.policies | size | default: 0 }}"
+
+  - name: create_enrich_policy_if_missing
+    type: if
+    steps:
+      - name: create_enrich_policy
+        type: elasticsearch.request
+        with:
+          method: PUT
+          path: /_enrich/policy/{{ consts.enrich_policy }}
+          body:
+            match:
+              indices: "{{ consts.source_index }}"
+              match_field: sys_id
+              enrich_fields:
+                - name
+              query:
+                bool:
+                  filter:
+                    - exists:
+                        field: sys_id.keyword
+                    - exists:
+                        field: name.keyword
+    condition: "steps.enrich_policy_state.output.policy_count: 0"
+    else:
+      - name: log_policy_exists
+        type: console
+        with:
+          message: "Enrich policy {{ consts.enrich_policy }} already exists - reusing it."
+
+  # 2. Execute the policy to refresh the CI names
+  - name: execute_enrich_policy
+    type: elasticsearch.request
+    with:
+      method: POST
+      path: /_enrich/policy/{{ consts.enrich_policy }}/_execute
+      params:
+        wait_for_completion: true
+
+  # 3. Create / overwrite the ingest pipeline that resolves names
+  - name: put_ingest_pipeline
+    type: elasticsearch.request
+    with:
+      method: PUT
+      path: /_ingest/pipeline/{{ consts.pipeline }}
+      body:
+        description: Resolve ServiceNow CI relationship sys_ids to human-readable names
+        processors:
+          - enrich:
+              policy_name: "{{ consts.enrich_policy }}"
+              field: parent.value
+              target_field: _parent_ci
+              ignore_missing: true
+          - enrich:
+              policy_name: "{{ consts.enrich_policy }}"
+              field: child.value
+              target_field: _child_ci
+              ignore_missing: true
+          - script:
+              lang: painless
+              params:
+                rel_types: "{{ consts.relationship_type_names }}"
+              source: |
+                def parentId = (ctx.parent instanceof Map) ? ctx.parent.value : null;
+                def childId = (ctx.child instanceof Map) ? ctx.child.value : null;
+                def typeId = (ctx.type instanceof Map) ? ctx.type.value : null;
+
+                def parentName = null;
+                if (ctx._parent_ci instanceof Map) {
+                  parentName = ctx._parent_ci.name;
+                  if (parentName instanceof List) {
+                    parentName = parentName.size() > 0 ? parentName[0] : null;
+                  }
+                }
+                def childName = null;
+                if (ctx._child_ci instanceof Map) {
+                  childName = ctx._child_ci.name;
+                  if (childName instanceof List) {
+                    childName = childName.size() > 0 ? childName[0] : null;
+                  }
+                }
+
+                def relTypes = (params.rel_types instanceof Map) ? params.rel_types : [:];
+                def relName = (typeId != null && relTypes.containsKey(typeId)) ? relTypes[typeId] : typeId;
+
+                ctx.parent = ['value': parentName != null ? parentName : parentId];
+                ctx.child = ['value': childName != null ? childName : childId];
+                ctx.relationship = ['type': relName];
+                ctx.remove('_parent_ci');
+                ctx.remove('_child_ci');
+                ctx.remove('type');
+                ctx._id = ctx.sys_id;
+
+  # 4. Recreate the lookup index (old sys_id/name/sys_class_name content is replaced)
+  # 9.4.0: `elasticsearch.indices.exists` returns a bare boolean (no `.result`), so a condition on `output.result`
+  # fails with "Cannot use 'in' operator to search for 'result' in false". Delete unconditionally instead and ignore
+  # the 404 when the index does not exist yet.
+  - name: delete_lookup_index
+    type: elasticsearch.request
+    on-failure:
+      continue: true
+    with:
+      method: DELETE
+      path: /{{ consts.lookup_index }}
+
+  - name: create_lookup_index
+    type: elasticsearch.indices.create
+    with:
+      index: "{{ consts.lookup_index }}"
+      settings:
+        index:
+          mode: lookup
+      mappings:
+        dynamic: false
+        properties:
+          sys_id:
+            type: keyword
+          parent:
+            properties:
+              value:
+                type: keyword
+          relationship:
+            properties:
+              type:
+                type: keyword
+          child:
+            properties:
+              value:
+                type: keyword
+
+  # 5. Reindex relationship records through the naming pipeline
+  - name: reindex_relationships
+    type: elasticsearch.request
+    with:
+      method: POST
+      path: /_reindex
+      params:
+        wait_for_completion: true
+        refresh: true
+      body:
+        source:
+          index: "{{ consts.source_index }}"
+          query:
+            bool:
+              filter:
+                - exists:
+                    field: parent.value.keyword
+                - exists:
+                    field: child.value.keyword
+                - exists:
+                    field: sys_id.keyword
+          _source:
+            includes:
+              - sys_id
+              - parent.value
+              - child.value
+              - type.value
+        dest:
+          index: "{{ consts.lookup_index }}"
+          pipeline: "{{ consts.pipeline }}"
+
+  # 6. Summary
+  - name: summary
+    type: console
+    with:
+      message: |
+        Lookup index: {{ consts.lookup_index }} (source: {{ consts.source_index }})
+        Enrich policy: {{ consts.enrich_policy }} | Pipeline: {{ consts.pipeline }}
+        {%- if steps.delete_lookup_index.output.acknowledged == true %}
+        Index status: existed - deleted and recreated
+        {%- else %}
+        Index status: created in this run
+        {%- endif %}
+        Reindex result:
+          total: {{ steps.reindex_relationships.output.total }}
+          created: {{ steps.reindex_relationships.output.created }}
+          updated: {{ steps.reindex_relationships.output.updated }}
+          failures: {{ steps.reindex_relationships.output.failures | json }}
+

@@ -11,7 +11,7 @@ LOOKUP_INDEX="servicenow-cmdb-ci-rel-lookup"
 DATA="$ROOT_DIR/data/cmdb-ci-rel-lookup.ndjson"
 
 log "Creating lookup index $LOOKUP_INDEX (idempotent)"
-code=$(es -o /dev/null -w '%{http_code}' -X HEAD "$ES_URL/$LOOKUP_INDEX")
+code=$(es -o /dev/null -w '%{http_code}' -I "$ES_URL/$LOOKUP_INDEX")
 if [[ "$code" == "200" ]]; then
   echo "    index already exists"
 else

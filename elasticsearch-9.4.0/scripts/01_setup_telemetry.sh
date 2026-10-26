@@ -3,7 +3,7 @@
 source "$(dirname "$0")/lib.sh"
 
 log "Creating index $DEMO_INDEX (idempotent)"
-code=$(es -o /dev/null -w '%{http_code}' -X HEAD "$ES_URL/$DEMO_INDEX")
+code=$(es -o /dev/null -w '%{http_code}' -I "$ES_URL/$DEMO_INDEX")
 if [[ "$code" == "200" ]]; then
   echo "    index already exists"
 else

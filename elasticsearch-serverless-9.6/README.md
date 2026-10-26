@@ -77,6 +77,9 @@ bash scripts/02_create_rules.sh
 bash scripts/04_deploy_workflow.sh          # optional: AI_CONNECTOR_ID=<connector id> to pin the LLM
 ```
 
+For `https://` endpoints with a self-signed or private-CA certificate, prefix any script with `INSECURE=1` (curl `-k`, TLS
+verification off; trusted networks only). `http://` URLs work as they are, but the API key then travels unencrypted.
+
 Needs `bash`, `curl`, `jq`. The API key must be allowed to manage rules, cases, data views and workflows in Kibana and to
 read/write the indices used here.
 

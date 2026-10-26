@@ -18,8 +18,12 @@ DEMO_DATAVIEW_ID="cmdb-demo-telemetry"
 RULE_TAG="cmdb-ci-correlation"
 WORKFLOW_ID="cmdb-alert-correlation"
 
-es() { curl -sS -m 120 -H "Authorization: ApiKey $ES_API_KEY" -H 'Content-Type: application/json' "$@"; }
-kb() { curl -sS -m 120 -H "Authorization: ApiKey $ES_API_KEY" -H 'Content-Type: application/json' -H 'kbn-xsrf: true' "$@"; }
+# INSECURE=1 skips TLS certificate verification (self-signed / private-CA clusters). Use on trusted networks only.
+CURL_INSECURE=""
+if [[ "${INSECURE:-0}" == "1" ]]; then CURL_INSECURE="-k"; printf '\033[1;33mwarning:\033[0m TLS verification disabled (INSECURE=1)\n' >&2; fi
+
+es() { curl -sS $CURL_INSECURE -m 120 -H "Authorization: ApiKey $ES_API_KEY" -H 'Content-Type: application/json' "$@"; }
+kb() { curl -sS $CURL_INSECURE -m 120 -H "Authorization: ApiKey $ES_API_KEY" -H 'Content-Type: application/json' -H 'kbn-xsrf: true' "$@"; }
 
 log() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 die() { printf '\033[1;31merror:\033[0m %s\n' "$*" >&2; exit 1; }
